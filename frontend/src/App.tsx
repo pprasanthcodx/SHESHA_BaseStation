@@ -128,7 +128,7 @@ function App() {
     const initializeData = async () => {
       try {
         const nodesRes = await fetch(`${API_BASE_URL}/nodes/status`);
-        if (!nodesRes.ok) return;
+        if (!nodesRes.ok) throw new Error("API not available");
         const nodes = await nodesRes.json();
         
         const newLiveData: Record<string, LiveTelemetryPayload> = {};
@@ -177,7 +177,13 @@ function App() {
           setSelectedNode(prev => prev || nodes[0].id);
         }
       } catch (e) {
-        console.error("Failed to initialize state", e);
+        console.error("Failed to initialize state from backend, loading DEMO MODE fallback", e);
+        import('./demoData').then(({ generateDemoData }) => {
+          const { liveData: demoLive, historyData: demoHist } = generateDemoData();
+          setHistoryData(prev => ({ ...demoHist, ...prev }));
+          setLiveData(prev => ({ ...demoLive, ...prev }));
+          setSelectedNode(prev => prev || Object.keys(demoLive)[0]);
+        }).catch(err => console.error("Failed to load demo data", err));
       }
     };
     initializeData();

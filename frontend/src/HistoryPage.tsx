@@ -68,7 +68,12 @@ export const HistoryPage: React.FC<HistoryPageProps> = ({ nodes }) => {
         setData(historyData);
         setRiskEvents(eventsData);
       } catch (err: any) {
-        setError(err.message);
+        console.error("History fetch failed, loading DEMO MODE fallback", err);
+        import('./demoData').then(({ getDemoHistoryPage, getDemoRiskEvents }) => {
+          setData(getDemoHistoryPage(selectedNode, limit, offset));
+          setRiskEvents(getDemoRiskEvents(selectedNode));
+          setError(null);
+        }).catch(() => setError(err.message));
       } finally {
         setLoading(false);
       }
