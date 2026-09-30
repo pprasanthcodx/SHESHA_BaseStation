@@ -1,3 +1,4 @@
+import { API_BASE_URL, getWsUrl } from './config';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { Activity, History as HistoryIcon, Settings, Cpu, Info, X, ShieldAlert } from 'lucide-react';
 import type { LiveTelemetryPayload, AffectedParam } from './types';
@@ -9,7 +10,7 @@ import ConfigPage from './ConfigPage';
 import ParameterAnalysis from './ParameterAnalysis';
 import FosAnalysis from './FosAnalysis';
 
-const WS_URL = "ws://127.0.0.1:8001/ws/live";
+const WS_URL = getWsUrl('/ws/live');
 
 interface CriticalAlertProps {
   data: LiveTelemetryPayload;
@@ -126,7 +127,7 @@ function App() {
   useEffect(() => {
     const initializeData = async () => {
       try {
-        const nodesRes = await fetch("http://127.0.0.1:8001/nodes/status");
+        const nodesRes = await fetch(`${API_BASE_URL}/nodes/status`);
         if (!nodesRes.ok) return;
         const nodes = await nodesRes.json();
         
@@ -134,7 +135,7 @@ function App() {
         const newHistoryData: Record<string, LiveTelemetryPayload[]> = {};
         
         for (const node of nodes) {
-          const histRes = await fetch(`http://127.0.0.1:8001/telemetry/${node.id}/history?hours=24&limit=200`);
+          const histRes = await fetch(`${API_BASE_URL}/telemetry/${node.id}/history?hours=24&limit=200`);
           if (histRes.ok) {
             const histData = await histRes.json();
             const records = Array.isArray(histData.records) ? histData.records : [];
@@ -398,4 +399,7 @@ function App() {
 }
 
 export default App;
+
+
+
 

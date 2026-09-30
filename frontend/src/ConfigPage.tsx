@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './config';
 import React, { useState, useEffect } from 'react';
 import { Settings, Save, AlertCircle, CheckCircle } from 'lucide-react';
 
@@ -31,7 +32,7 @@ export const ConfigPage: React.FC = () => {
 
   const fetchNodes = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8001/nodes/status');
+      const res = await fetch(`${API_BASE_URL}/nodes/status`);
       if (!res.ok) throw new Error('Failed to load nodes');
       const data = await res.json();
       setNodes(data);
@@ -67,7 +68,7 @@ export const ConfigPage: React.FC = () => {
     setSaving(true);
     setMessage(null);
     try {
-      const res = await fetch(`http://127.0.0.1:8001/nodes/${selectedNodeId}/config`, {
+      const res = await fetch(`${API_BASE_URL}/nodes/${selectedNodeId}/config`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(params),
@@ -184,3 +185,5 @@ export const ConfigPage: React.FC = () => {
   );
 };
 export default ConfigPage;
+
+

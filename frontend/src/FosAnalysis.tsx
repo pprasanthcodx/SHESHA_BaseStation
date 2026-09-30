@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './config';
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Info, AlertTriangle, ShieldCheck, Database,  } from 'lucide-react';
 import type { LiveTelemetryPayload } from './types';
@@ -46,8 +47,8 @@ export const FosAnalysis: React.FC<FosAnalysisProps> = ({ currentData, onBack })
       try {
         setLoading(true);
         const [nodeRes, modelRes] = await Promise.all([
-          fetch(`http://127.0.0.1:8001/nodes/${nodeId}`),
-          fetch('http://127.0.0.1:8001/model/info')
+          fetch(`${API_BASE_URL}/nodes/${nodeId}`),
+          fetch(`${API_BASE_URL}/model/info`)
         ]);
 
         if (!nodeRes.ok || !modelRes.ok) {
@@ -272,3 +273,5 @@ export const FosAnalysis: React.FC<FosAnalysisProps> = ({ currentData, onBack })
 };
 
 export default FosAnalysis;
+
+

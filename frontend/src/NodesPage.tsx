@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './config';
 import React, { useEffect, useState } from 'react';
 import { Activity, Battery, BatteryWarning, Signal, } from 'lucide-react';
 
@@ -33,7 +34,7 @@ export const NodesPage: React.FC = () => {
   useEffect(() => {
     const fetchNodes = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8001/nodes/status');
+        const response = await fetch(`${API_BASE_URL}/nodes/status`);
         if (!response.ok) throw new Error('Failed to fetch nodes');
         const data = await response.json();
         setNodes(data);
@@ -127,3 +128,5 @@ export const NodesPage: React.FC = () => {
   );
 };
 export default NodesPage;
+
+

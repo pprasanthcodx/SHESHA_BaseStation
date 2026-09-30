@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './config';
 import React, { useState, useEffect } from 'react';
 import { History, Download, ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
 
@@ -55,8 +56,8 @@ export const HistoryPage: React.FC<HistoryPageProps> = ({ nodes }) => {
       setError(null);
       try {
         const [historyRes, eventsRes] = await Promise.all([
-          fetch(`http://127.0.0.1:8001/telemetry/${selectedNode}/history?hours=${hours}&limit=${limit}&offset=${offset}`),
-          fetch(`http://127.0.0.1:8001/risk_events/${selectedNode}?limit=20`)
+          fetch(`${API_BASE_URL}/telemetry/${selectedNode}/history?hours=${hours}&limit=${limit}&offset=${offset}`),
+          fetch(`${API_BASE_URL}/risk_events/${selectedNode}?limit=20`)
         ]);
 
         if (!historyRes.ok || !eventsRes.ok) throw new Error('Failed to fetch data');
@@ -268,5 +269,7 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
 export default function HistoryPageWrapper(props: HistoryPageProps) {
   return <ErrorBoundary><HistoryPage {...props} /></ErrorBoundary>;
 }
+
+
 
 

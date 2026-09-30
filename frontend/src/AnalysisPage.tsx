@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './config';
 import React, { useEffect, useState } from 'react';
 import { Activity, AlertTriangle, Database, ShieldAlert, Cpu } from 'lucide-react';
  // Adjust imports as necessary
@@ -36,8 +37,8 @@ export const AnalysisPage: React.FC = () => {
       try {
         setLoading(true);
         const [nodesRes, modelRes] = await Promise.all([
-          fetch('http://127.0.0.1:8001/nodes/status'),
-          fetch('http://127.0.0.1:8001/model/info')
+          fetch(`${API_BASE_URL}/nodes/status`),
+          fetch(`${API_BASE_URL}/model/info`)
         ]);
 
         if (!nodesRes.ok || !modelRes.ok) {
@@ -248,3 +249,5 @@ export const AnalysisPage: React.FC = () => {
 };
 
 export default AnalysisPage;
+
+

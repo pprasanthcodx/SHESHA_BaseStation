@@ -1,3 +1,4 @@
+import { API_BASE_URL } from './config';
 import { useMemo, useState, useEffect } from 'react';
 import { Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ComposedChart, BarChart, Bar } from 'recharts';
 import type { LiveTelemetryPayload, ForecastResult } from './types';
@@ -10,7 +11,7 @@ interface ParameterAnalysisProps {
   onBack: () => void;
 }
 
-const API_URL = "http://127.0.0.1:8001";
+const API_URL = API_BASE_URL;
 
 const TIME_RANGES = [
   { label: '1H', hours: 1 },
@@ -416,4 +417,6 @@ const StatCard = ({ label, value, highlight, color }: { label: string; value: st
 );
 
 export default ParameterAnalysis;
+
+
 
