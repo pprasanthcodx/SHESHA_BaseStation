@@ -1,4 +1,4 @@
-import { API_BASE_URL } from './config';
+import { API_BASE_URL, DEMO_MODE } from './config';
 import React, { useEffect, useState } from 'react';
 import { Activity, AlertTriangle, Database, ShieldAlert, Cpu } from 'lucide-react';
  // Adjust imports as necessary
@@ -34,6 +34,14 @@ export const AnalysisPage: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (DEMO_MODE) {
+        import('./demoData').then(({ getDemoNodesStatus, getDemoModelInfo }) => {
+          setNodes(getDemoNodesStatus());
+          setModelInfo(getDemoModelInfo());
+          setError(null);
+        }).finally(() => setLoading(false));
+        return;
+      }
       try {
         setLoading(true);
         const [nodesRes, modelRes] = await Promise.all([
@@ -249,5 +257,6 @@ export const AnalysisPage: React.FC = () => {
 };
 
 export default AnalysisPage;
+
 
 

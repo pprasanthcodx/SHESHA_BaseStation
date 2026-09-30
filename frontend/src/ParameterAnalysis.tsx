@@ -1,4 +1,4 @@
-import { API_BASE_URL } from './config';
+import { API_BASE_URL, DEMO_MODE } from './config';
 import { useMemo, useState, useEffect } from 'react';
 import { Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ComposedChart, BarChart, Bar } from 'recharts';
 import type { LiveTelemetryPayload, ForecastResult } from './types';
@@ -50,6 +50,12 @@ const ParameterAnalysis = ({ param, currentData, historyData, onBack }: Paramete
   useEffect(() => {
     if (!telemetry.node_id) return;
     setLoadingForecast(true);
+    if (DEMO_MODE) {
+      import('./demoData').then(({ getDemoForecast }) => {
+        setForecastResult(getDemoForecast(telemetry.node_id, config.key));
+      }).finally(() => setLoadingForecast(false));
+      return;
+    }
     fetch(`${API_URL}/telemetry/${telemetry.node_id}/forecast?parameter=${param}&horizon=10`)
       .then(res => {
         if (!res.ok) throw new Error("API Error");
@@ -78,6 +84,14 @@ const ParameterAnalysis = ({ param, currentData, historyData, onBack }: Paramete
     const range = TIME_RANGES.find(r => r.label === selectedRange);
     if (!range) return;
     setHistoryLoading(true);
+    if (DEMO_MODE) {
+      import('./demoData').then(({ getDemoHistoryPage }) => {
+        const demoPage = getDemoHistoryPage(telemetry.node_id, rowsPerPage, historyOffset);
+        setApiHistory(demoPage.records);
+        setHistoryTotal(demoPage.total);
+      }).finally(() => setHistoryLoading(false));
+      return;
+    }
     fetch(`${API_URL}/telemetry/${telemetry.node_id}/history?hours=${range.hours}&limit=${rowsPerPage}&offset=${historyOffset}`)
       .then(res => {
         if (!res.ok) throw new Error("API Error");
@@ -442,6 +456,8 @@ const StatCard = ({ label, value, highlight, color }: { label: string; value: st
 );
 
 export default ParameterAnalysis;
+
+
 
 
 

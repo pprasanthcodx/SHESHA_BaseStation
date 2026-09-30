@@ -1,4 +1,4 @@
-import { API_BASE_URL } from './config';
+import { API_BASE_URL, DEMO_MODE } from './config';
 import React, { useEffect, useState } from 'react';
 import { Activity, Battery, BatteryWarning, Signal, } from 'lucide-react';
 
@@ -33,6 +33,13 @@ export const NodesPage: React.FC = () => {
 
   useEffect(() => {
     const fetchNodes = async () => {
+      if (DEMO_MODE) {
+        import('./demoData').then(({ getDemoNodesStatus }) => {
+          setNodes(getDemoNodesStatus());
+          setError(null);
+        }).finally(() => setLoading(false));
+        return;
+      }
       try {
         const response = await fetch(`${API_BASE_URL}/nodes/status`);
         if (!response.ok) throw new Error('Failed to fetch nodes');
@@ -128,5 +135,6 @@ export const NodesPage: React.FC = () => {
   );
 };
 export default NodesPage;
+
 
 

@@ -1,4 +1,4 @@
-import { API_BASE_URL } from './config';
+import { API_BASE_URL, DEMO_MODE } from './config';
 import React, { useState, useEffect } from 'react';
 import { Settings, Save, AlertCircle, CheckCircle } from 'lucide-react';
 
@@ -31,6 +31,17 @@ export const ConfigPage: React.FC = () => {
   }, []);
 
   const fetchNodes = async () => {
+    if (DEMO_MODE) {
+      import('./demoData').then(({ getDemoNodesStatus }) => {
+        const data = getDemoNodesStatus();
+        setNodes(data);
+        if (data.length > 0 && !selectedNodeId) {
+          setSelectedNodeId(data[0].id);
+          setParams(data[0].geotechnical);
+        }
+      }).catch(err => setMessage({ type: 'error', text: err.message })).finally(() => setLoading(false));
+      return;
+    }
     try {
       const res = await fetch(`${API_BASE_URL}/nodes/status`);
       if (!res.ok) throw new Error('Failed to load nodes');
@@ -67,6 +78,14 @@ export const ConfigPage: React.FC = () => {
     if (!selectedNodeId || !params) return;
     setSaving(true);
     setMessage(null);
+    if (DEMO_MODE) {
+      setTimeout(() => {
+        setMessage({ type: 'success', text: 'Configuration updated successfully (DEMO)' });
+        setLastUpdated(new Date());
+        setSaving(false);
+      }, 500);
+      return;
+    }
     try {
       const res = await fetch(`${API_BASE_URL}/nodes/${selectedNodeId}/config`, {
         method: 'PUT',
@@ -185,5 +204,7 @@ export const ConfigPage: React.FC = () => {
   );
 };
 export default ConfigPage;
+
+
 
 

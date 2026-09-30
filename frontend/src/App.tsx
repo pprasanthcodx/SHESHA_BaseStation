@@ -1,4 +1,4 @@
-import { API_BASE_URL, getWsUrl } from './config';
+import { API_BASE_URL, getWsUrl, DEMO_MODE } from './config';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { Activity, History as HistoryIcon, Settings, Cpu, Info, X, ShieldAlert } from 'lucide-react';
 import type { LiveTelemetryPayload, AffectedParam } from './types';
@@ -126,6 +126,15 @@ function App() {
   // INITIALIZATION: Fetch nodes status and recent history to prevent blank page on refresh
   useEffect(() => {
     const initializeData = async () => {
+      if (DEMO_MODE) {
+        import('./demoData').then(({ generateDemoData }) => {
+          const { liveData: demoLive, historyData: demoHist } = generateDemoData();
+          setHistoryData(prev => ({ ...demoHist, ...prev }));
+          setLiveData(prev => ({ ...demoLive, ...prev }));
+          setSelectedNode(prev => prev || Object.keys(demoLive)[0]);
+        }).catch(err => console.error(err));
+        return;
+      }
       try {
         const nodesRes = await fetch(`${API_BASE_URL}/nodes/status`);
         if (!nodesRes.ok) throw new Error("API not available");
@@ -195,6 +204,7 @@ function App() {
 
     const connectWs = () => {
       if (!mounted) return;
+      if (DEMO_MODE) return;
       const ws = new WebSocket(WS_URL);
       wsRef.current = ws;
 
@@ -405,6 +415,7 @@ function App() {
 }
 
 export default App;
+
 
 
 

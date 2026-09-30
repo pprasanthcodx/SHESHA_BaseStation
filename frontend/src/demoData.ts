@@ -129,12 +129,35 @@ export const getDemoNodesStatus = () => {
 };
 
 export const getDemoModelInfo = () => ({
-  model_type: "IsolationForest",
-  status: "CALIBRATED",
-  training_records: 1200,
-  mae: 0.12,
-  rmse: 0.15,
-  r2: 0.89,
-  limitations: ["DEMO MODE: Simulated metrics", "FOS is a modeled estimate"]
+  metrics: { mae: 0.12, rmse: 0.15, r2: 0.89 },
+  limitations: ["DEMO MODE: Simulated metrics", "FOS is a modeled estimate"],
+  fos_model: {
+    features: ["cohesion", "phi", "unit_weight", "bench_height", "slope_angle", "natural_moisture"],
+    target: "fos",
+    description: "Geotechnical Simulation"
+  }
 });
+
+
+
+export const getDemoNodeDetail = (nodeId: string) => {
+  const status = getDemoNodesStatus().find(n => n.id === nodeId);
+  return status || null;
+};
+
+export const getDemoForecast = (nodeId: string, paramKey: string) => {
+  const { liveData } = generateDemoData();
+  const ld = liveData[nodeId];
+  const currentVal = ld ? Number((ld.telemetry as any)[paramKey]) || 0 : 0;
+  return {
+    forecast: Array.from({length: 10}).map((_, i) => ({
+      timestamp: new Date(Date.now() + (i + 1) * 5000).toISOString(),
+      forecast_value: currentVal,
+      lower_bound: currentVal - (Math.abs(currentVal) * 0.05),
+      upper_bound: currentVal + (Math.abs(currentVal) * 0.05)
+    })),
+    trend_direction: "stable"
+  };
+};
+
 

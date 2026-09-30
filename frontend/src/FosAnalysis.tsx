@@ -1,4 +1,4 @@
-import { API_BASE_URL } from './config';
+import { API_BASE_URL, DEMO_MODE } from './config';
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Info, AlertTriangle, ShieldCheck, Database,  } from 'lucide-react';
 import type { LiveTelemetryPayload } from './types';
@@ -44,6 +44,14 @@ export const FosAnalysis: React.FC<FosAnalysisProps> = ({ currentData, onBack })
 
   useEffect(() => {
     const fetchData = async () => {
+      if (DEMO_MODE) {
+        import('./demoData').then(({ getDemoNodeDetail, getDemoModelInfo }) => {
+          setNodeData(getDemoNodeDetail(nodeId));
+          setModelInfo(getDemoModelInfo());
+          setError(null);
+        }).finally(() => setLoading(false));
+        return;
+      }
       try {
         setLoading(true);
         const [nodeRes, modelRes] = await Promise.all([
@@ -273,5 +281,7 @@ export const FosAnalysis: React.FC<FosAnalysisProps> = ({ currentData, onBack })
 };
 
 export default FosAnalysis;
+
+
 
 
