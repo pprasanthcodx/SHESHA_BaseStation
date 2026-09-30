@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0B0F19;
+  --color-surface: #111827;
+  --color-elevated: #1F2937;
+  
+  --color-text-main: #E8ECEF;
+  --color-text-secondary: #9AA6AF;
+  
+  --color-brand-gold: #C29E58;
+  --color-telemetry-blue: #3B82F6;
+  
+  --color-status-stable: #10B981;
+  --color-status-watch: #F59E0B;
+  --color-status-critical: #EF4444;
+  --color-border: #303941;
+
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-text-main font-sans antialiased selection:bg-brand-gold/30 selection:text-brand-gold;
+  }
+}
+
+@layer utilities {
+  .animate-mount {
+    animation: mount 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+@keyframes mount {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom Scrollbar for compact industrial look */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(17, 24, 39, 0.5); 
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(154, 166, 175, 0.3); 
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(154, 166, 175, 0.6); 
+}
